@@ -1,5 +1,13 @@
 # Create T3 App
 
+All the Links:
+
+https://mdxeditor.dev/editor/docs/getting-started#basic-usage
+
+https://lucide.dev/
+
+https://ui.shadcn.com/
+
 This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
 
 ## What's next? How do I make an app with this?
