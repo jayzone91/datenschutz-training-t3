@@ -1,0 +1,171 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "mysql"
+    // NOTE: When using mysql or sqlserver, uncomment the @db.Text annotations in model Account below
+    // Further reading:
+    // https://next-auth.js.org/adapters/prisma#create-the-prisma-schema
+    // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string
+    url      = env("DATABASE_URL")
+}
+
+// Necessary for Next auth
+model Account {
+    id                       String  @id @default(cuid())
+    userId                   String
+    type                     String
+    provider                 String
+    providerAccountId        String
+    refresh_token            String? @db.Text
+    access_token             String? // @db.Text
+    expires_at               Int?
+    token_type               String?
+    scope                    String?
+    id_token                 String? // @db.Text
+    session_state            String?
+    user                     User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+    refresh_token_expires_in Int?
+
+    @@unique([provider, providerAccountId])
+}
+
+model Session {
+    id           String   @id @default(cuid())
+    sessionToken String   @unique
+    userId       String
+    expires      DateTime
+    user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model User {
+    id               String             @id @default(cuid())
+    name             String?
+    email            String?            @unique
+    emailVerified    DateTime?
+    image            String?
+    admin            Boolean            @default(false)
+    accounts         Account[]
+    sessions         Session[]
+    ZertifikatAnUser ZertifikatAnUser[]
+    TestAnUser       TestAnUser[]
+    ModulAnUser      ModulAnUser[]
+    FrageAnUser      FrageAnUser[]
+}
+
+model VerificationToken {
+    identifier String
+    token      String   @unique
+    expires    DateTime
+
+    @@unique([identifier, token])
+}
+
+model Zertifikat {
+    id               String             @id @default(cuid())
+    Name             String             @unique
+    Beschreibung     String
+    Inhalt           String
+    Erstellt         DateTime           @default(now())
+    ZertifikatAnUser ZertifikatAnUser[]
+}
+
+model ZertifikatAnUser {
+    user          User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+    userId        String
+    Zertifikat    Zertifikat @relation(fields: [ZertifikatId], references: [id], onDelete: Cascade)
+    ZertifikatId  String
+    erstellt      DateTime   @default(now())
+    erstelltDurch String
+
+    @@id([userId, ZertifikatId])
+}
+
+model Kategorie {
+    id           String  @id @default(cuid())
+    Name         String
+    Beschreibung String
+    Tests        Test[]
+    Modul        Modul[]
+}
+
+model Test {
+    id           String       @id @default(cuid())
+    Name         String       @unique
+    Beschreibung String
+    Module       Modul[]
+    Kategorie    Kategorie?   @relation(fields: [kategorieId], references: [id])
+    kategorieId  String?
+    TestAnUser   TestAnUser[]
+}
+
+model TestAnUser {
+    user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    userId    String
+    Test      Test     @relation(fields: [TestId], references: [id], onDelete: Cascade)
+    TestId    String
+    gestartet DateTime @default(now())
+    beendet   DateTime
+
+    @@id([userId, TestId])
+}
+
+model Modul {
+    id           String        @id @default(cuid())
+    Name         String        @unique
+    Beschreibung String
+    Kategorie    Kategorie?    @relation(fields: [kategorieId], references: [id])
+    kategorieId  String?
+    Fragen       Frage[]
+    Test         Test?         @relation(fields: [testId], references: [id])
+    testId       String?
+    ModulAnUser  ModulAnUser[]
+}
+
+model ModulAnUser {
+    user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    userId      String
+    Modul       Modul    @relation(fields: [ModulId], references: [id], onDelete: Cascade)
+    ModulId     String
+    Fortschritt Int      @default(0)
+    Begonnen    DateTime @default(now())
+
+    @@id([userId, ModulId])
+}
+
+model Frage {
+    id          String        @id @default(cuid())
+    Name        String        @unique
+    Modul       Modul?        @relation(fields: [modulId], references: [id])
+    modulId     String?
+    Antworten   Antwort[]
+    Korrekt     String // Antwort ID
+    FrageAnUser FrageAnUser[]
+}
+
+model FrageAnUser {
+    user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    userId         String
+    Frage          Frage    @relation(fields: [FrageId], references: [id], onDelete: Cascade)
+    FrageId        String
+    Beantwortet_am DateTime @default(now())
+
+    @@id([userId, FrageId])
+}
+
+model Antwort {
+    id      String  @id @default(cuid())
+    name    String
+    Frage   Frage?  @relation(fields: [frageId], references: [id])
+    frageId String?
+}
+
+model Info {
+    id           String @id @default(cuid())
+    Name         String @unique
+    Beschreibung String
+}
