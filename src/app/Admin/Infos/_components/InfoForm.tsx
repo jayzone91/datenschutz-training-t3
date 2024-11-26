@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -29,11 +28,10 @@ import {
   linkPlugin,
   linkDialogPlugin,
   tablePlugin,
-  type MDXEditorMethods,
 } from "@mdxeditor/editor";
 import "@mdxeditor/editor/style.css";
 import type { Info } from "@prisma/client";
-import { useRef } from "react";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -46,6 +44,7 @@ const formSchema = z.object({
 export default function InfoForm({ Info }: { Info: Info | undefined | null }) {
   const Create = api.Infos.create.useMutation();
   const Update = api.Infos.update.useMutation();
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -57,16 +56,18 @@ export default function InfoForm({ Info }: { Info: Info | undefined | null }) {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
+    let res: Info | null = null;
     if (Info == null) {
-      await Create.mutateAsync({
+      res = await Create.mutateAsync({
         ...values,
       });
     } else {
-      await Update.mutateAsync({
+      res = await Update.mutateAsync({
         id: Info.id,
         ...values,
       });
     }
+    if (res) router.push("/Admin/Infos");
   }
 
   return (

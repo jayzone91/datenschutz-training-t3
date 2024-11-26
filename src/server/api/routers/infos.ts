@@ -7,6 +7,14 @@ import {
 } from "@/server/api/trpc";
 
 export const infoRouter = createTRPCRouter({
+  getLatest: publicProcedure.query(async ({ ctx }) => {
+    return await ctx.db.info.findMany({
+      orderBy: {
+        published: "desc",
+      },
+      take: 6,
+    });
+  }),
   getAll: publicProcedure.query(async ({ ctx }) => {
     return await ctx.db.info.findMany();
   }),

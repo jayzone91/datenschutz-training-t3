@@ -1,56 +1,76 @@
 import Link from "next/link";
 import { auth } from "@/server/auth";
-import { HydrateClient } from "@/trpc/server";
+import { api, HydrateClient } from "@/trpc/server";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { TriangleAlert } from "lucide-react";
+import LatestInfos from "./_components/LatestInfo";
 
 export default async function Home() {
   const session = await auth();
+  await api.Infos.getLatest.prefetch();
 
   return (
     <HydrateClient>
-      <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c] text-white">
-        <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16">
-          <h1 className="text-5xl font-extrabold tracking-tight sm:text-[5rem]">
-            Create <span className="text-[hsl(280,100%,70%)]">T3</span> App
-          </h1>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-8">
-            <Link
-              className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 hover:bg-white/20"
-              href="https://create.t3.gg/en/usage/first-steps"
-              target="_blank"
-            >
-              <h3 className="text-2xl font-bold">First Steps →</h3>
-              <div className="text-lg">
-                Just the basics - Everything you need to know to set up your
-                database and authentication.
-              </div>
-            </Link>
-            <Link
-              className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 hover:bg-white/20"
-              href="https://create.t3.gg/en/introduction"
-              target="_blank"
-            >
-              <h3 className="text-2xl font-bold">Documentation →</h3>
-              <div className="text-lg">
-                Learn more about Create T3 App, the libraries it uses, and how
-                to deploy it.
-              </div>
-            </Link>
-          </div>
-          <div className="flex flex-col items-center gap-2">
-            <div className="flex flex-col items-center justify-center gap-4">
-              <p className="text-center text-2xl text-white">
-                {session && <span>Logged in as {session.user?.name}</span>}
-              </p>
-              <Link
-                href={session ? "/api/auth/signout" : "/api/auth/signin"}
-                className="rounded-full bg-white/10 px-10 py-3 font-semibold no-underline transition hover:bg-white/20"
-              >
-                {session ? "Sign out" : "Sign in"}
-              </Link>
-            </div>
-          </div>
-        </div>
-      </main>
+      <div className="container mx-auto mb-6 mt-12">
+        {!session ? (
+          <>
+            <h1>Willkommen</h1>
+            <h2>Auf der Datenschutz-Lernplatform</h2>
+            <h3>
+              Der Firmen Computer Extra GmbH und AEM Communication GmbH & Co. KG
+            </h3>
+
+            <p>Zum Nutzen der Seite ist ein Account erforderlich.</p>
+            <p>
+              Es können auch Informationen ohne Account gelesen werden, diese
+              sind jedoch rein informativ
+            </p>
+
+            <p className="mb-12">
+              Du hast bereits einen Account? Dann melde dich{" "}
+              <Link className="text-blue-500 underline" href="/api/auth/signin">
+                hier
+              </Link>{" "}
+              an.
+            </p>
+          </>
+        ) : (
+          <>
+            {session.user.name ? (
+              <h1>Hallo {session.user.name},</h1>
+            ) : (
+              <Alert variant="destructive">
+                <TriangleAlert className="h-4 w-4" />
+                <AlertTitle className="text-2xl font-extrabold">
+                  Achtung!
+                </AlertTitle>
+                <AlertDescription>
+                  <p>
+                    Du hast noch gar keinen Namen hinterlegt. Dieser wird
+                    benötigt um Zertifikate zu erstellen.
+                    <br />
+                    Geh auf dein{" "}
+                    <Link href="/Benutzer" className="underline">
+                      Profil
+                    </Link>{" "}
+                    und hinterlegt doch mal einen 😊
+                  </p>
+                </AlertDescription>
+              </Alert>
+            )}
+            <h2>Schön, dass du wieder hier bist.</h2>
+            <h3>Hier ist alles neue:</h3>
+          </>
+        )}
+        <h4>Neueste Infos:</h4>
+        <LatestInfos />
+        {session && (
+          <>
+            <h4>Neueste Module:</h4>
+            <h4>Neueste Tests:</h4>
+          </>
+        )}
+      </div>
     </HydrateClient>
   );
 }

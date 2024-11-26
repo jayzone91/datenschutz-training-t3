@@ -24,11 +24,11 @@ export default function NavigationLinks() {
     const menuItems: MenuItems[] = [];
     // Dashbaard
     menuItems.push({
-      title: "Dashbaord",
+      title: "Dashboard",
       items: [
         {
           title: "Übersicht",
-          href: "/Dashboard",
+          href: "/",
           desc: "Deine Übersicht",
         },
         {
@@ -54,7 +54,7 @@ export default function NavigationLinks() {
       if (y != null)
         y.items.push({
           title: x.Name,
-          href: x.id,
+          href: `/Infos/${x.id}`,
           desc: x.Beschreibung,
         });
     });

@@ -165,8 +165,9 @@ model Antwort {
 }
 
 model Info {
-    id           String @id @default(cuid())
-    Name         String @unique
+    id           String   @id @default(cuid())
+    published    DateTime @default(now())
+    Name         String   @unique
     Beschreibung String
     Body         String
 }
