@@ -164,10 +164,19 @@ model Antwort {
     frageId String?
 }
 
-model Info {
-    id           String   @id @default(cuid())
-    published    DateTime @default(now())
-    Name         String   @unique
+model InfoKategorie {
+    id           String @id @default(cuid())
+    Name         String @unique
     Beschreibung String
-    Body         String
+    Infos        Info[]
+}
+
+model Info {
+    id              String        @id @default(cuid())
+    published       DateTime      @default(now())
+    Name            String        @unique
+    Beschreibung    String
+    Body            String
+    InfoKategorie   InfoKategorie @relation(fields: [infoKategorieId], references: [id], onDelete: Cascade)
+    infoKategorieId String
 }

@@ -7,6 +7,7 @@ import { api, HydrateClient } from "@/trpc/server";
 import AdminInfos from "./_pages/ShowAll";
 import NewInfoPage from "./_pages/New";
 import InfoEditPage from "./_pages/Edit";
+import NewInfoKatPage from "./_pages/NewCat";
 
 export default async function InfoPages({
   params,
@@ -49,6 +50,13 @@ export default async function InfoPages({
             <NewInfoPage />
           </HydrateClient>
         ); // New Form
+      }
+      if (slug[0] == "newCat") {
+        return (
+          <HydrateClient>
+            <NewInfoKatPage />
+          </HydrateClient>
+        ); // New Cat Form
       }
     }
     if (slug.length == 2) {

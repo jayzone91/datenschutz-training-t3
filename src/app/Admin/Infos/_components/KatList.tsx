@@ -1,6 +1,10 @@
 "use client";
 
-import type { Info } from "@prisma/client";
+import { api } from "@/trpc/react";
+import LoadingSpinner from "../../../_components/Loading";
+import Error from "../../../_components/Error";
+import { InfoDataTablePageinated } from "@/components/data-table";
+import type { InfoKategorie } from "@prisma/client";
 import type { ColumnDef } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
 import {
@@ -14,7 +18,7 @@ import {
 import { MoreHorizontal } from "lucide-react";
 import Link from "next/link";
 
-export const columns: ColumnDef<Info>[] = [
+export const columns: ColumnDef<InfoKategorie>[] = [
   {
     accessorKey: "id",
     header: "ID",
@@ -49,3 +53,13 @@ export const columns: ColumnDef<Info>[] = [
     },
   },
 ];
+
+export default function InfoKatList() {
+  const Infos = api.Infos.getKategorien.useQuery();
+
+  if (Infos.isLoading) return <LoadingSpinner />;
+  if (Infos.isError) return <Error error="Fehler beim Lesen von Infos" />;
+  if (Infos.data) {
+    return <InfoDataTablePageinated columns={columns} data={Infos.data} />;
+  }
+}

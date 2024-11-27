@@ -32,25 +32,30 @@ export default function LatestInfos() {
                 <Button asChild>
                   <Link
                     className="text-blue-500 underline"
-                    href={`/Infos/${x.id}`}
+                    href={`/Infos/Info/${x.id}`}
                   >
                     Lesen
                   </Link>
                 </Button>
-                <small className="text-gray-400">
-                  Veröffentlicht am{" "}
-                  {x.published.toLocaleDateString("de-DE", {
-                    day: "2-digit",
-                    month: "long",
-                    year: "numeric",
-                  })}{" "}
-                  um{" "}
-                  {x.published.toLocaleTimeString("de-DE", {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}{" "}
-                  Uhr
-                </small>
+                <div className="flex flex-col text-end">
+                  <small className="text-gray-400">
+                    Veröffentlicht am{" "}
+                    {x.published.toLocaleDateString("de-DE", {
+                      day: "2-digit",
+                      month: "long",
+                      year: "numeric",
+                    })}{" "}
+                    um{" "}
+                    {x.published.toLocaleTimeString("de-DE", {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}{" "}
+                    Uhr
+                  </small>
+                  <small className="text-gray-400">
+                    Kategorie: {x.InfoKategorie?.Name}
+                  </small>
+                </div>
               </div>
             </CardFooter>
           </Card>

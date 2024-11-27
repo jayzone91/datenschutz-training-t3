@@ -19,6 +19,7 @@ import { Button } from "@/components/ui/button";
 import type { User } from "@prisma/client";
 import LoadingSpinner from "./Loading";
 import Error from "./Error";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
   name: z.string(),
@@ -53,6 +54,7 @@ function FormFields({
 }) {
   const UserUpdate = api.Benutzer.updateUser.useMutation();
   const AdminUpdate = api.Benutzer.updateUserAdmin.useMutation();
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -73,6 +75,7 @@ function FormFields({
         name: values.name,
       });
     }
+    router.push("/");
   }
 
   return (

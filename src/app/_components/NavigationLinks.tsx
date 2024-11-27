@@ -13,7 +13,7 @@ import LoadingSpinner from "./Loading";
 import Error from "./Error";
 
 export default function NavigationLinks() {
-  const Infos = api.Infos.getAll.useQuery();
+  const Infos = api.Infos.getKategorien.useQuery();
   const [menuItems, setMenuItems] = useState<MenuItems[] | undefined>(
     undefined,
   );
