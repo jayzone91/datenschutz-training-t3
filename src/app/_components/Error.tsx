@@ -1,7 +1,16 @@
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { TriangleAlert } from "lucide-react";
+
 export default function Error({ error }: { error: string }) {
   return (
-    <div className="border border-red-600 px-4 py-2">
-      <p className="text-2xl font-extrabold uppercase text-red-600">{error}</p>
-    </div>
+    <Alert variant="destructive">
+      <TriangleAlert className="h-4 w-4" />
+      <AlertTitle className="text-2xl font-extrabold">
+        Ein Fehler ist aufgetreten
+      </AlertTitle>
+      <AlertDescription>
+        <p>{error}</p>
+      </AlertDescription>
+    </Alert>
   );
 }

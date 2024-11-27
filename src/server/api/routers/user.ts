@@ -11,11 +11,55 @@ export const userRouter = createTRPCRouter({
           where: {
             id: input.id,
           },
+          include: {
+            ZertifikatAnUser: {
+              include: {
+                Zertifikat: true,
+              },
+            },
+            TestAnUser: {
+              include: {
+                Test: true,
+              },
+            },
+            ModulAnUser: {
+              include: {
+                Modul: true,
+              },
+            },
+            FrageAnUser: {
+              include: {
+                Frage: true,
+              },
+            },
+          },
         });
       } else {
         return await ctx.db.user.findUnique({
           where: {
             id: ctx.session.user.id,
+          },
+          include: {
+            ZertifikatAnUser: {
+              include: {
+                Zertifikat: true,
+              },
+            },
+            TestAnUser: {
+              include: {
+                Test: true,
+              },
+            },
+            ModulAnUser: {
+              include: {
+                Modul: true,
+              },
+            },
+            FrageAnUser: {
+              include: {
+                Frage: true,
+              },
+            },
           },
         });
       }
@@ -53,6 +97,18 @@ export const userRouter = createTRPCRouter({
         },
         data: {
           name: input.name,
+        },
+      });
+    }),
+
+  deleteUser: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      if (!ctx.session.user.admin) return null;
+
+      return await ctx.db.user.delete({
+        where: {
+          id: input.id,
         },
       });
     }),

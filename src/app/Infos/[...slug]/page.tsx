@@ -4,6 +4,7 @@ import Error from "@/app/_components/Error";
 import { api, HydrateClient } from "@/trpc/server";
 import ShowInfo from "./_components/ShowInfo";
 import ShowInfoKategorie from "./_components/ShowInfos";
+import KategorienPage from "./_components/ShowKategorien";
 
 export default async function InfoPage({
   params,
@@ -16,12 +17,21 @@ export default async function InfoPage({
 
   if (Array.isArray(slug))
     if (slug.length == 1 && slug[0]) {
-      await api.Infos.getKategorie.prefetch({ id: slug[0] });
-      return (
-        <HydrateClient>
-          <ShowInfoKategorie id={slug[0]} />
-        </HydrateClient>
-      );
+      if (slug[0] == "Kategorien") {
+        await api.Infos.getKategorien.prefetch();
+        return (
+          <HydrateClient>
+            <KategorienPage />
+          </HydrateClient>
+        );
+      } else {
+        await api.Infos.getKategorie.prefetch({ id: slug[0] });
+        return (
+          <HydrateClient>
+            <ShowInfoKategorie id={slug[0]} />
+          </HydrateClient>
+        );
+      }
     }
   if (slug.length == 2 && slug[1]) {
     await api.Infos.get.prefetch({ id: slug[1] });

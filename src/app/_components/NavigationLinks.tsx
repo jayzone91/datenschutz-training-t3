@@ -49,15 +49,26 @@ export default function NavigationLinks() {
       title: "Infos",
       items: [],
     });
-    Infos.data?.forEach((x) => {
+    for (let i = 0; i < 6; i++) {
       const y = menuItems.find((z) => z.title === "Infos");
-      if (y != null)
+      if (y != null && Infos.data[i] != null)
         y.items.push({
-          title: x.Name,
-          href: `/Infos/${x.id}`,
-          desc: x.Beschreibung,
+          title: Infos.data[i]!.Name,
+          href: `/Infos/${Infos.data[i]!.id}`,
+          desc: Infos.data[i]!.Beschreibung,
         });
-    });
+    }
+
+    if (Infos.data.length > 5) {
+      const y = menuItems.find((z) => z.title === "Infos");
+      if (y != null) {
+        y.items.push({
+          title: "Mehr ...",
+          href: `/Infos/Kategorien`,
+          desc: "Alle Kategorien",
+        });
+      }
+    }
 
     setMenuItems(menuItems);
   }, [Infos.data]);

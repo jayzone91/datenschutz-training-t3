@@ -20,7 +20,7 @@ export default function LatestInfos() {
 
   if (Infos.data)
     return (
-      <div className="grid grid-cols-2 gap-6">
+      <div className="my-6 grid grid-cols-2 gap-6">
         {Infos.data.map((x) => (
           <Card key={x.id}>
             <CardHeader>{x.Name}</CardHeader>

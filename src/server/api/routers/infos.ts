@@ -19,7 +19,14 @@ export const infoRouter = createTRPCRouter({
     });
   }),
   getKategorien: publicProcedure.query(async ({ ctx }) => {
-    return await ctx.db.infoKategorie.findMany();
+    return await ctx.db.infoKategorie.findMany({
+      orderBy: {
+        published: "desc",
+      },
+      include: {
+        _count: true,
+      },
+    });
   }),
   getAll: publicProcedure.query(async ({ ctx }) => {
     return await ctx.db.info.findMany({
